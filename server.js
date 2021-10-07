@@ -56,6 +56,10 @@ app.use(
     secret: "keyboard cat",
     resave: false,
     saveUninitialized: false,
+    cookie: {
+      secure: false,
+      maxAge: 60000,
+    },
   })
 );
 
@@ -92,7 +96,12 @@ app.post(
 
 app.get("/logout", function (req, res) {
   req.logout();
-  res.redirect("/");
+  res.status(200).clearCookie("connect.sid", {
+    path: "/",
+  });
+  req.session.destroy(function (err) {
+    res.redirect("/");
+  });
 });
 
 app.listen(3000);
